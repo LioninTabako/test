@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Moje portfolio AI — projekty stworzone podczas kursu sztucznej inteligencji.">
+<meta name="theme-color" content="#6d4aff">
+<title>Moje portfolio AI</title>
+
+<style>
+/* =========================================================
+   MOJE PORTFOLIO AI — SINGLE FILE DESIGN SYSTEM
+   Wszystko znajduje się w tym pliku: HTML + CSS + JavaScript.
+   ========================================================= */
+
+/* ---------- 01. RESET ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  background:#f7f8fc;
+  color:#111936;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+::selection{background:#7657ff;color:#fff}
+:focus-visible{outline:3px solid #8a70ff;outline-offset:4px}
+
+/* ---------- 02. VARIABLES ---------- */
+:root{
+  --bg:#f7f8fc;
+  --surface:#ffffff;
+  --surface-2:#f1efff;
+  --text:#111936;
+  --muted:#68708b;
+  --border:#e5e7f0;
+  --primary:#6d4aff;
+  --primary-2:#9b7cff;
+  --primary-dark:#5032d9;
+  --shadow:0 20px 60px rgba(40,31,100,.10);
+  --shadow-sm:0 8px 25px rgba(40,31,100,.08);
+  --radius:24px;
+  --radius-sm:16px;
+  --max:1180px;
+}
+
+/* ---------- 03. DECORATIVE BACKGROUND ---------- */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-30vh -20vw auto auto;
+  width:55vw;
+  height:55vw;
+  min-width:420px;
+  min-height:420px;
+  max-width:900px;
+  max-height:900px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(121,86,255,.13),rgba(121,86,255,0) 68%);
+  pointer-events:none;
+  z-index:-2;
+  animation:ambientFloat 12s ease-in-out infinite alternate;
+}
+body::after{
+  content:"";
+  position:fixed;
+  left:-20vw;
+  bottom:-30vh;
+  width:55vw;
+  height:55vw;
+  min-width:420px;
+  min-height:420px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(155,124,255,.09),rgba(155,124,255,0) 68%);
+  pointer-events:none;
+  z-index:-2;
+  animation:ambientFloat2 15s ease-in-out infinite alternate;
+}
+@keyframes ambientFloat{
+  from{transform:translate3d(-2%,0,0) scale(1)}
+  to{transform:translate3d(5%,5%,0) scale(1.08)}
+}
+@keyframes ambientFloat2{
+  from{transform:translate3d(0,2%,0) scale(1)}
+  to{transform:translate3d(6%,-4%,0) scale(1.12)}
+}
+
+/* ---------- 04. LOADER ---------- */
+.loader{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  transition:opacity .7s ease,visibility .7s ease;
+}
+.loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader__inner{text-align:center}
+.loader__logo{
+  width:70px;
+  height:70px;
+  margin:0 auto 18px;
+  display:grid;
+  place-items:center;
+  border-radius:22px;
+  color:#fff;
+  font-size:28px;
+  font-weight:900;
+  background:linear-gradient(135deg,#6d4aff,#a88fff);
+  box-shadow:0 15px 45px rgba(109,74,255,.35);
+  animation:loaderPulse 1.2s ease-in-out infinite;
+}
+.loader__bar{
+  width:190px;
+  height:5px;
+  overflow:hidden;
+  margin:auto;
+  border-radius:999px;
+  background:#eeeef6;
+}
+.loader__bar::after{
+  content:"";
+  display:block;
+  width:45%;
+  height:100%;
+  border-radius:inherit;
+  background:#6d4aff;
+  animation:loaderBar 1s ease-in-out infinite;
+}
+@keyframes loaderPulse{50%{transform:translateY(-6px) rotate(2deg);box-shadow:0 25px 55px rgba(109,74,255,.4)}}
+@keyframes loaderBar{from{transform:translateX(-120%)}to{transform:translateX(350%)}}
+
+/* ---------- 05. UTILITY ---------- */
+.container{
+  width:min(calc(100% - 40px),var(--max));
+  margin-inline:auto;
+}
+.section{padding:110px 0}
+.section--compact{padding:80px 0}
+.section-heading{max-width:730px;margin-bottom:48px}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:14px;
+  color:var(--primary);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.eyebrow::before{
+  content:"";
+  width:30px;
+  height:2px;
+  border-radius:999px;
+  background:currentColor;
+}
+.section-title{
+  font-size:clamp(32px,5vw,54px);
+  line-height:1.06;
+  letter-spacing:-.04em;
+  margin-bottom:16px;
+}
+.section-description{color:var(--muted);font-size:18px}
+
+/* ---------- 06. HEADER ---------- */
+.site-header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+  padding:18px 0;
+  transition:.35s ease;
+}
+.site-header.scrolled{
+  padding:10px 0;
+}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:64px;
+  padding:8px 10px 8px 18px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:20px;
+  background:rgba(255,255,255,.75);
+  box-shadow:0 10px 40px rgba(30,23,90,.08);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900}
+.brand__mark{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  color:#fff;
+  background:linear-gradient(135deg,#6240f4,#a78bff);
+  box-shadow:0 8px 22px rgba(109,74,255,.28);
+}
+.brand__text{letter-spacing:-.03em}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{
+  position:relative;
+  padding:10px 13px;
+  border-radius:12px;
+  color:#4e5670;
+  font-size:14px;
+  font-weight:700;
+  transition:.25s ease;
+}
+.nav-links a:hover,.nav-links a.active{
+  color:var(--primary);
+  background:#f1efff;
+}
+.nav-toggle{
+  display:none;
+  width:45px;
+  height:45px;
+  border:0;
+  border-radius:13px;
+  color:var(--text);
+  background:#f1efff;
+}
+.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
+  display:block;
+  width:20px;
+  height:2px;
+  margin:auto;
+  border-radius:2px;
+  background:currentColor;
+  transition:.25s;
+}
+.nav-toggle span{position:relative}
+.nav-toggle span::before,.nav-toggle span::after{content:"";position:absolute;left:0}
+.nav-toggle span::before{top:-7px}
+.nav-toggle span::after{top:7px}
+
+/* ---------- 07. HERO ---------- */
+.hero{
+  position:relative;
+  min-height:100vh;
+  display:grid;
+  align-items:center;
+  padding:150px 0 90px;
+}
+.hero__grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:70px;
+  align-items:center;
+}
+.hero__content{animation:heroContent .9s .15s both cubic-bezier(.2,.8,.2,1)}
+@keyframes heroContent{
+  from{opacity:0;transform:translateY(35px)}
+  to{opacity:1;transform:none}
+}
+.hero h1{
+  max-width:780px;
+  margin-bottom:24px;
+  font-size:clamp(46px,7vw,86px);
+  line-height:.96;
+  letter-spacing:-.065em;
+}
+.gradient-text{
+  color:transparent;
+  background:linear-gradient(110deg,#5432db,#8b63ff 45%,#b08fff);
+  background-clip:text;
+  -webkit-background-clip:text;
+}
+.hero__description{
+  max-width:650px;
+  margin-bottom:32px;
+  color:var(--muted);
+  font-size:clamp(17px,2vw,20px);
+}
+.hero__actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-height:52px;
+  padding:0 20px;
+  overflow:hidden;
+  border:1px solid transparent;
+  border-radius:15px;
+  font-weight:800;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.btn::after{
+  content:"";
+  position:absolute;
+  top:-80%;
+  left:-100%;
+  width:55%;
+  height:260%;
+  transform:rotate(25deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+  transition:left .65s ease;
+}
+.btn:hover::after{left:150%}
+.btn:hover{transform:translateY(-3px)}
+.btn--primary{
+  color:#fff;
+  background:linear-gradient(135deg,#6240f4,#8563ff);
+  box-shadow:0 12px 30px rgba(109,74,255,.27);
+}
+.btn--primary:hover{box-shadow:0 17px 40px rgba(109,74,255,.35)}
+.btn--secondary{
+  color:var(--text);
+  border-color:var(--border);
+  background:#fff;
+}
+.hero__visual{
+  position:relative;
+  min-height:470px;
+  animation:heroVisual 1s .3s both cubic-bezier(.2,.8,.2,1);
+}
+@keyframes heroVisual{
+  from{opacity:0;transform:scale(.92) rotate(3deg)}
+  to{opacity:1;transform:none}
+}
+.ai-orbit{
+  position:absolute;
+  inset:30px;
+  display:grid;
+  place-items:center;
+}
+.ai-orbit::before,.ai-orbit::after{
+  content:"";
+  position:absolute;
+  border:1px solid rgba(109,74,255,.18);
+  border-radius:50%;
+}
+.ai-orbit::before{inset:8%;animation:orbitSpin 18s linear infinite}
+.ai-orbit::after{inset:-4%;animation:orbitSpin 26s linear infinite reverse}
+@keyframes orbitSpin{to{transform:rotate(360deg)}}
+.hero-card{
+  position:relative;
+  width:min(100%,390px);
+  padding:28px;
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:32px;
+  background:rgba(255,255,255,.84);
+  box-shadow:0 35px 90px rgba(48,35,120,.16);
+  backdrop-filter:blur(18px);
+  transform:rotate(2deg);
+  animation:floatCard 5s ease-in-out infinite;
+}
+@keyframes floatCard{
+  0%,100%{transform:rotate(2deg) translateY(0)}
+  50%{transform:rotate(-1deg) translateY(-13px)}
+}
+.hero-card__top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.hero-card__icon{
+  width:55px;height:55px;display:grid;place-items:center;
+  border-radius:17px;color:#fff;font-size:25px;
+  background:linear-gradient(135deg,#6d4aff,#a58cff);
+}
+.hero-card__dots{display:flex;gap:5px}
+.hero-card__dots i{width:7px;height:7px;border-radius:50%;background:#d9d6e8}
+.hero-card h3{font-size:26px;letter-spacing:-.04em;margin-bottom:8px}
+.hero-card p{color:var(--muted);font-size:14px;margin-bottom:24px}
+.mini-chart{height:130px;display:flex;align-items:end;gap:8px}
+.mini-chart span{
+  flex:1;
+  height:var(--h);
+  border-radius:7px 7px 3px 3px;
+  background:linear-gradient(to top,#7454f7,#b49fff);
+  transform-origin:bottom;
+  animation:chartIn .9s both;
+}
+.mini-chart span:nth-child(2){animation-delay:.06s}
+.mini-chart span:nth-child(3){animation-delay:.12s}
+.mini-chart span:nth-child(4){animation-delay:.18s}
+.mini-chart span:nth-child(5){animation-delay:.24s}
+.mini-chart span:nth-child(6){animation-delay:.30s}
+.mini-chart span:nth-child(7){animation-delay:.36s}
+@keyframes chartIn{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.floating-badge{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:12px 15px;
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:15px;
+  background:rgba(255,255,255,.88);
+  box-shadow:0 15px 35px rgba(35,26,100,.12);
+  backdrop-filter:blur(14px);
+  font-size:13px;
+  font-weight:800;
+  animation:badgeFloat 4s ease-in-out infinite;
+}
+.floating-badge--one{top:25px;right:0}
+.floating-badge--two{bottom:55px;left:0;animation-delay:-2s}
+.badge-dot{width:9px;height:9px;border-radius:50%;background:#7a5aff;box-shadow:0 0 0 5px #eeeaff}
+@keyframes badgeFloat{50%{transform:translateY(-9px)}}
+
+/* ---------- 08. ABOUT ---------- */
+.about-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:80px;align-items:center}
+.about-photo{
+  position:relative;
+  min-height:500px;
+  display:grid;
+  place-items:center;
+}
+.about-photo__frame{
+  position:relative;
+  width:min(100%,420px);
+  aspect-ratio:4/5;
+  overflow:hidden;
+  border-radius:32px;
+  background:linear-gradient(135deg,#eae5ff,#d9d0ff);
+  box-shadow:var(--shadow);
+}
+.about-photo__placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  padding:40px;
+  text-align:center;
+  color:#5946aa;
+  background:
+    radial-gradient(circle at 25% 20%,rgba(255,255,255,.9),transparent 25%),
+    linear-gradient(145deg,#e9e4ff,#d7ceff);
+}
+.about-photo__placeholder strong{display:block;font-size:70px;line-height:1;margin-bottom:12px}
+.about-photo__placeholder span{font-weight:800}
+.about-photo__shine{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35),transparent 60%);
+  transform:translateX(-120%);
+  animation:shine 5s 2s infinite;
+}
+@keyframes shine{20%,100%{transform:translateX(120%)}}
+.about-note{
+  position:absolute;
+  right:-15px;
+  bottom:30px;
+  max-width:220px;
+  padding:18px;
+  border:1px solid rgba(255,255,255,.85);
+  border-radius:20px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow-sm);
+  font-size:13px;
+  font-weight:700;
+  backdrop-filter:blur(12px);
+}
+.about-copy p{color:var(--muted);font-size:17px;margin-bottom:18px}
+.about-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px}
+.about-list li{
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#fff;
+  font-size:14px;
+  font-weight:750;
+  transition:.25s ease;
+}
+.about-list li:hover{transform:translateY(-4px);border-color:#cfc6ff;box-shadow:var(--shadow-sm)}
+.about-list li::before{content:"✦";margin-right:8px;color:var(--primary)}
+
+/* ---------- 09. PROJECT FILTER ---------- */
+.projects-section{background:#fff}
+.filter-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:35px;
+}
+.filter-btn{
+  min-height:42px;
+  padding:0 15px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  color:#646c85;
+  background:#fff;
+  font-size:13px;
+  font-weight:800;
+  transition:.25s ease;
+}
+.filter-btn:hover{border-color:#bdb1ff;color:var(--primary);transform:translateY(-2px)}
+.filter-btn.is-active{
+  color:#fff;
+  border-color:var(--primary);
+  background:var(--primary);
+  box-shadow:0 8px 20px rgba(109,74,255,.2);
+}
+
+/* ---------- 10. PROJECT GRID ---------- */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+.project-card{
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:#fff;
+  box-shadow:0 8px 30px rgba(30,25,75,.045);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
+  animation:cardIn .65s both cubic-bezier(.2,.8,.2,1);
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(24px) scale(.97)}
+  to{opacity:1;transform:none}
+}
+.project-card:hover{
+  transform:translateY(-9px);
+  border-color:#d5ceff;
+  box-shadow:0 25px 55px rgba(50,35,120,.12);
+}
+.project-card.is-hidden{display:none}
+.project-thumb{
+  position:relative;
+  aspect-ratio:16/10;
+  overflow:hidden;
+  cursor:zoom-in;
+  background:#eae8f7;
+}
+.project-thumb__art{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.project-thumb__art::before{
+  content:"";
+  position:absolute;
+  width:170%;
+  height:170%;
+  background:conic-gradient(from 40deg,#7251f7,#d4caff,#fff,#8c70ff,#7251f7);
+  animation:artRotate 12s linear infinite;
+}
+.project-thumb__art::after{
+  content:"";
+  position:absolute;
+  inset:12%;
+  border-radius:30%;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(20px);
+}
+@keyframes artRotate{to{transform:rotate(360deg)}}
+.project-symbol{
+  position:relative;
+  z-index:2;
+  width:90px;
+  height:90px;
+  display:grid;
+  place-items:center;
+  border-radius:28px;
+  color:#fff;
+  font-size:38px;
+  font-weight:900;
+  background:linear-gradient(135deg,#6544ee,#a48aff);
+  box-shadow:0 20px 50px rgba(65,44,180,.3);
+  transition:.4s ease;
+}
+.project-card:hover .project-symbol{transform:scale(1.08) rotate(-5deg)}
+.project-overlay{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:rgba(41,29,91,.36);
+  opacity:0;
+  transition:.3s ease;
+  backdrop-filter:blur(2px);
+}
+.project-thumb:hover .project-overlay,.project-thumb:focus-within .project-overlay{opacity:1}
+.zoom-label{
+  padding:10px 15px;
+  border-radius:999px;
+  background:rgba(255,255,255,.94);
+  color:#292046;
+  font-size:12px;
+  font-weight:900;
+}
+.project-body{padding:21px}
+.project-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.category{
+  display:inline-flex;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#6247d5;
+  background:#f0edff;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+.tool{color:#8a90a5;font-size:11px;font-weight:800}
+.project-title{font-size:21px;letter-spacing:-.035em;margin-bottom:8px}
+.project-description{min-height:72px;color:var(--muted);font-size:13px;margin-bottom:16px}
+.project-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.project-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:var(--primary);
+  font-size:13px;
+  font-weight:900;
+}
+.project-link:hover{text-decoration:underline}
+.project-arrow{transition:.25s}
+.project-link:hover .project-arrow{transform:translateX(4px)}
+.no-results{
+  display:none;
+  grid-column:1/-1;
+  padding:60px 20px;
+  text-align:center;
+  color:var(--muted);
+}
+.no-results.is-visible{display:block}
+
+/* ---------- 11. SKILLS ---------- */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.skill-card{
+  position:relative;
+  padding:26px;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:#fff;
+  overflow:hidden;
+  transition:.3s ease;
+}
+.skill-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;
+  width:100%;
+  height:3px;
+  transform:scaleX(0);
+  transform-origin:left;
+  background:linear-gradient(90deg,#6240f4,#aa91ff);
+  transition:.4s ease;
+}
+.skill-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-sm)}
+.skill-card:hover::before{transform:scaleX(1)}
+.skill-icon{
+  width:50px;height:50px;
+  display:grid;place-items:center;
+  margin-bottom:18px;
+  border-radius:15px;
+  color:#6544ee;
+  background:#f0edff;
+  font-size:22px;
+}
+.skill-card h3{font-size:19px;margin-bottom:7px}
+.skill-card p{color:var(--muted);font-size:14px}
+
+/* ---------- 12. STATS ---------- */
+.stats{
+  margin-top:40px;
+  padding:24px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:var(--border);
+  overflow:hidden;
+}
+.stat{padding:25px;text-align:center;background:#fff}
+.stat strong{display:block;color:var(--primary);font-size:34px;line-height:1;margin-bottom:7px}
+.stat span{color:var(--muted);font-size:12px;font-weight:800}
+
+/* ---------- 13. FOOTER ---------- */
+.site-footer{
+  padding:55px 0 30px;
+  color:#dfe0eb;
+  background:#11152c;
+}
+.footer-grid{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:40px;
+  padding-bottom:40px;
+}
+.footer-brand{max-width:450px}
+.footer-brand .brand{color:#fff;margin-bottom:17px}
+.footer-brand p{color:#a9adc0;font-size:14px}
+.footer-contact{text-align:right}
+.footer-contact h3{color:#fff;font-size:14px;margin-bottom:8px}
+.footer-contact a{color:#a9adc0;font-size:14px}
+.footer-contact a:hover{color:#fff}
+.footer-bottom{
+  padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.1);
+  color:#80869e;
+  font-size:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+}
+
+/* ---------- 14. MODAL ---------- */
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  display:grid;
+  place-items:center;
+  padding:25px;
+  background:rgba(11,13,29,.78);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:.3s ease;
+  backdrop-filter:blur(10px);
+}
+.modal.is-open{opacity:1;visibility:visible;pointer-events:auto}
+.modal__box{
+  position:relative;
+  width:min(900px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:28px;
+  background:#fff;
+  box-shadow:0 35px 100px rgba(0,0,0,.35);
+  transform:translateY(25px) scale(.96);
+  transition:.4s cubic-bezier(.2,.8,.2,1);
+}
+.modal.is-open .modal__box{transform:none}
+.modal__visual{
+  min-height:430px;
+  display:grid;
+  place-items:center;
+  padding:50px;
+  background:linear-gradient(135deg,#eeeaff,#dcd4ff);
+}
+.modal__symbol{
+  width:180px;height:180px;
+  display:grid;place-items:center;
+  border-radius:48px;
+  color:#fff;
+  font-size:80px;
+  font-weight:900;
+  background:linear-gradient(135deg,#6140ed,#a78dff);
+  box-shadow:0 35px 70px rgba(72,47,190,.3);
+  animation:modalSymbol .7s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes modalSymbol{
+  from{opacity:0;transform:scale(.7) rotate(-8deg)}
+  to{opacity:1;transform:none}
+}
+.modal__content{padding:28px}
+.modal__content h2{font-size:30px;letter-spacing:-.04em;margin-bottom:10px}
+.modal__content p{color:var(--muted);max-width:700px}
+.modal__close{
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:3;
+  width:44px;height:44px;
+  display:grid;place-items:center;
+  border:0;
+  border-radius:13px;
+  color:#29233e;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 7px 20px rgba(30,20,80,.12);
+  font-size:20px;
+}
+.modal__close:hover{background:#fff;transform:scale(1.05)}
+
+/* ---------- 15. SCROLL REVEAL ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(35px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1);
+}
+.reveal.is-visible{opacity:1;transform:none}
+
+/* ---------- 16. CUSTOM SCROLLBAR ---------- */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#f1f1f7}
+::-webkit-scrollbar-thumb{background:#c6bdf0;border-radius:99px;border:2px solid #f1f1f7}
+::-webkit-scrollbar-thumb:hover{background:#9c8be8}
+
+/* ---------- 17. RESPONSIVE ---------- */
+@media(max-width:980px){
+  .hero__grid{grid-template-columns:1fr;gap:50px}
+  .hero__visual{min-height:430px}
+  .hero__content{text-align:center}
+  .hero__description{margin-inline:auto}
+  .hero__actions{justify-content:center}
+  .about-grid{grid-template-columns:1fr;gap:50px}
+  .about-photo{min-height:420px}
+  .projects-grid{grid-template-columns:repeat(2,1fr)}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .container{width:min(calc(100% - 28px),var(--max))}
+  .section{padding:80px 0}
+  .section--compact{padding:60px 0}
+  .nav-toggle{display:grid;place-items:center}
+  .nav-links{
+    position:absolute;
+    top:76px;
+    left:0;
+    right:0;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:rgba(255,255,255,.97);
+    box-shadow:var(--shadow);
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-10px);
+    transition:.25s ease;
+  }
+  .nav-links.is-open{opacity:1;visibility:visible;transform:none}
+  .nav-links a{text-align:center;padding:13px}
+  .hero{padding-top:125px}
+  .hero h1{font-size:clamp(42px,13vw,65px)}
+  .hero__visual{min-height:390px}
+  .hero-card{width:min(100%,340px)}
+  .floating-badge--one{right:-5px}
+  .floating-badge--two{left:-5px}
+  .about-list{grid-template-columns:1fr}
+  .projects-grid{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .stat{padding:20px}
+  .footer-grid{flex-direction:column}
+  .footer-contact{text-align:left}
+  .footer-bottom{flex-direction:column}
+}
+@media(max-width:480px){
+  .navbar{padding-left:12px}
+  .brand__text{font-size:14px}
+  .brand__mark{width:38px;height:38px}
+  .hero__visual{min-height:350px}
+  .ai-orbit{inset:5px}
+  .hero-card{padding:22px}
+  .floating-badge{font-size:11px;padding:10px}
+  .modal{padding:12px}
+  .modal__visual{min-height:300px;padding:30px}
+  .modal__symbol{width:130px;height:130px;font-size:55px}
+}
+
+/* ---------- 18. REDUCED MOTION ---------- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- LOADER -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <div class="loader__logo">AI</div>
+    <div class="loader__bar"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header" id="top">
+  <div class="container">
+    <nav class="navbar" aria-label="Główna nawigacja">
+      <a class="brand" href="#start" aria-label="Moje portfolio AI — strona główna">
+        <span class="brand__mark" aria-hidden="true">AI</span>
+        <span class="brand__text">Moje portfolio AI</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-label="Otwórz menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#start">Start</a>
+        <a href="#o-mnie">O mnie</a>
+        <a href="#projekty">Projekty</a>
+        <a href="#umiejetnosci">Czego się nauczyłem</a>
+        <a href="#kontakt">Kontakt</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="start">
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <div class="eyebrow">Portfolio kursu sztucznej inteligencji</div>
+      <h1>Tworzę rzeczy z pomocą <span class="gradient-text">AI.</span></h1>
+      <p class="hero__description">
+        Cześć! Nazywam się <strong>Imię Nazwisko</strong>. To moje portfolio projektów
+        wykonanych podczas nauki sztucznej inteligencji — od grafik i tekstów po strony,
+        prezentacje, filmy i proste gry.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#projekty">Zobacz moje projekty <span>↓</span></a>
+        <a class="btn btn--secondary" href="#o-mnie">Poznaj mnie</a>
+      </div>
+    </div>
+
+    <div class="hero__visual" aria-hidden="true">
+      <div class="ai-orbit">
+        <div class="hero-card">
+          <div class="hero-card__top">
+            <div class="hero-card__icon">✦</div>
+            <div class="hero-card__dots"><i></i><i></i><i></i></div>
+          </div>
+          <h3>Pomysł → AI → Projekt</h3>
+          <p>Eksperymentuję, testuję i zamieniam pomysły w gotowe materiały.</p>
+          <div class="mini-chart">
+            <span style="--h:34%"></span>
+            <span style="--h:51%"></span>
+            <span style="--h:42%"></span>
+            <span style="--h:72%"></span>
+            <span style="--h:61%"></span>
+            <span style="--h:88%"></span>
+            <span style="--h:76%"></span>
+          </div>
+        </div>
+      </div>
+      <div class="floating-badge floating-badge--one"><i class="badge-dot"></i> Kreatywność + AI</div>
+      <div class="floating-badge floating-badge--two"><i class="badge-dot"></i> 7 kategorii projektów</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="o-mnie">
+  <div class="container about-grid">
+    <div class="about-photo reveal">
+      <div class="about-photo__frame">
+        <div class="about-photo__placeholder" role="img" aria-label="Miejsce na zdjęcie autora portfolio">
+          <div>
+            <strong>👤</strong>
+            <span>Tutaj wstaw swoje zdjęcie</span>
+          </div>
+        </div>
+        <div class="about-photo__shine"></div>
+      </div>
+      <div class="about-note">💡 Wskazówka: zastąp ten placeholder swoim zdjęciem.</div>
+    </div>
+
+    <div class="about-copy reveal">
+      <div class="section-heading">
+        <div class="eyebrow">O mnie</div>
+        <h2 class="section-title">Uczę się, eksperymentuję i tworzę.</h2>
+      </div>
+      <p>
+        Jestem osobą ciekawą nowych technologii i możliwości, jakie daje sztuczna inteligencja.
+        Na kursie uczę się nie tylko korzystania z narzędzi AI, ale przede wszystkim świadomego
+        projektowania, poprawiania i oceniania efektów ich działania.
+      </p>
+      <p>
+        Najbardziej interesuje mnie połączenie technologii z kreatywnością. Testuję różne
+        sposoby pracy z tekstem, obrazem, prezentacjami, wideo, kodem oraz interaktywnymi
+        projektami.
+      </p>
+      <ul class="about-list" aria-label="Moje zainteresowania">
+        <li>Generowanie grafik</li>
+        <li>Prompt engineering</li>
+        <li>Tworzenie stron WWW</li>
+        <li>Praca z tekstem</li>
+        <li>Prezentacje i multimedia</li>
+        <li>Eksperymenty z AI</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section projects-section" id="projekty">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Moje projekty</div>
+      <h2 class="section-title">Pomysły zamienione w konkretne efekty.</h2>
+      <p class="section-description">
+        Użyj filtrów, aby zobaczyć projekty według kategorii.
+        Kliknij miniaturę, aby otworzyć większy podgląd.
+      </p>
+    </div>
+
+    <div class="filter-bar reveal" role="group" aria-label="Filtrowanie projektów">
+      <button class="filter-btn is-active" type="button" data-filter="all">Wszystkie</button>
+      <button class="filter-btn" type="button" data-filter="grafika">Grafika</button>
+      <button class="filter-btn" type="button" data-filter="tekst">Tekst</button>
+      <button class="filter-btn" type="button" data-filter="prezentacja">Prezentacja</button>
+      <button class="filter-btn" type="button" data-filter="wideo">Wideo</button>
+      <button class="filter-btn" type="button" data-filter="strona">Strona WWW</button>
+      <button class="filter-btn" type="button" data-filter="gra">Gra</button>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+
+      <article class="project-card reveal" data-category="grafika">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd projektu AI Vision" data-modal-symbol="✦" data-modal-title="AI Vision — grafika koncepcyjna" data-modal-description="Eksperymentalna grafika przygotowana z pomocą generatora obrazów AI. Projekt pokazuje pracę z kompozycją, stylem, światłem i iteracyjnym poprawianiem promptu.">
+          <div class="project-thumb__art"><span class="project-symbol">✦</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Grafika</span><span class="tool">Midjourney / DALL·E</span></div>
+          <h3 class="project-title">AI Vision</h3>
+          <p class="project-description">Koncepcyjna grafika pokazująca, jak pomysł można rozwinąć poprzez kolejne iteracje promptu.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="✦" data-modal-title="AI Vision — grafika koncepcyjna" data-modal-description="Eksperymentalna grafika przygotowana z pomocą generatora obrazów AI.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="tekst">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd projektu AI Story" data-modal-symbol="Aa" data-modal-title="AI Story — tekst kreatywny" data-modal-description="Krótka forma literacka przygotowana we współpracy z modelem językowym. Proces obejmował tworzenie koncepcji, redakcję i dopracowanie stylu.">
+          <div class="project-thumb__art"><span class="project-symbol">Aa</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Tekst</span><span class="tool">ChatGPT</span></div>
+          <h3 class="project-title">AI Story</h3>
+          <p class="project-description">Kreatywny tekst stworzony poprzez połączenie własnego pomysłu z pracą modelu językowego.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="Aa" data-modal-title="AI Story — tekst kreatywny" data-modal-description="Krótka forma literacka przygotowana we współpracy z modelem językowym.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="prezentacja">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd prezentacji AI w edukacji" data-modal-symbol="▦" data-modal-title="AI w edukacji — prezentacja" data-modal-description="Prezentacja pokazująca przykłady zastosowania sztucznej inteligencji w nauce, przygotowana z naciskiem na przejrzystą strukturę i atrakcyjną formę wizualną.">
+          <div class="project-thumb__art"><span class="project-symbol">▦</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Prezentacja</span><span class="tool">Canva + AI</span></div>
+          <h3 class="project-title">AI w edukacji</h3>
+          <p class="project-description">Prezentacja o możliwościach wykorzystania AI w procesie uczenia się i przygotowywania materiałów.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="▦" data-modal-title="AI w edukacji — prezentacja" data-modal-description="Prezentacja pokazująca przykłady zastosowania AI w nauce.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="wideo">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd filmu AI Motion" data-modal-symbol="▶" data-modal-title="AI Motion — krótki film" data-modal-description="Krótki materiał wideo przygotowany z wykorzystaniem narzędzi AI. Projekt obejmował scenariusz, generowanie elementów wizualnych oraz montaż.">
+          <div class="project-thumb__art"><span class="project-symbol">▶</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Wideo</span><span class="tool">Runway / CapCut</span></div>
+          <h3 class="project-title">AI Motion</h3>
+          <p class="project-description">Krótki materiał wideo łączący generowanie treści, animację i montaż.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="▶" data-modal-title="AI Motion — krótki film" data-modal-description="Krótki materiał wideo przygotowany z wykorzystaniem narzędzi AI.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="strona">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd strony AI Landing" data-modal-symbol="</>" data-modal-title="AI Landing — strona internetowa" data-modal-description="Responsywna strona internetowa zaprojektowana i zakodowana z pomocą AI. Projekt obejmuje strukturę HTML, stylowanie CSS, animacje oraz interakcje JavaScript.">
+          <div class="project-thumb__art"><span class="project-symbol">&lt;/&gt;</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Strona WWW</span><span class="tool">ChatGPT + HTML/CSS/JS</span></div>
+          <h3 class="project-title">AI Landing</h3>
+          <p class="project-description">Nowoczesna, responsywna strona stworzona jako eksperyment z generowaniem kodu i jego późniejszą edycją.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="</>" data-modal-title="AI Landing — strona internetowa" data-modal-description="Responsywna strona internetowa zaprojektowana i zakodowana z pomocą AI.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="gra">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd gry Neon Runner" data-modal-symbol="★" data-modal-title="Neon Runner — prosta gra" data-modal-description="Prosta gra przeglądarkowa przygotowana jako ćwiczenie z wykorzystania AI do tworzenia logiki JavaScript, interfejsu i pomysłów na mechanikę rozgrywki.">
+          <div class="project-thumb__art"><span class="project-symbol">★</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Gra</span><span class="tool">JavaScript + AI</span></div>
+          <h3 class="project-title">Neon Runner</h3>
+          <p class="project-description">Mała gra przeglądarkowa, w której AI pomogło przy projektowaniu mechaniki i kodu.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="★" data-modal-title="Neon Runner — prosta gra" data-modal-description="Prosta gra przeglądarkowa przygotowana jako ćwiczenie z JavaScript i AI.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="grafika">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd plakatu Future City" data-modal-symbol="◈" data-modal-title="Future City — plakat" data-modal-description="Plakat inspirowany futurystyczną architekturą. Projekt skupiał się na budowaniu spójnego stylu wizualnego i świadomym sterowaniu generatorem obrazu.">
+          <div class="project-thumb__art"><span class="project-symbol">◈</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Grafika</span><span class="tool">Adobe Firefly</span></div>
+          <h3 class="project-title">Future City</h3>
+          <p class="project-description">Futurystyczny plakat wykorzystujący generowanie obrazu i świadome budowanie kompozycji.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="◈" data-modal-title="Future City — plakat" data-modal-description="Plakat inspirowany futurystyczną architekturą.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="tekst">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd tekstu AI Copy" data-modal-symbol="✎" data-modal-title="AI Copy — tekst reklamowy" data-modal-description="Ćwiczenie z tworzenia krótkiego tekstu marketingowego. Najważniejszym elementem była iteracyjna praca nad tonem, grupą odbiorców i klarownością komunikatu.">
+          <div class="project-thumb__art"><span class="project-symbol">✎</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Tekst</span><span class="tool">Claude / ChatGPT</span></div>
+          <h3 class="project-title">AI Copy</h3>
+          <p class="project-description">Ćwiczenie z tworzenia i redagowania komunikatów dopasowanych do konkretnego odbiorcy.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="✎" data-modal-title="AI Copy — tekst reklamowy" data-modal-description="Ćwiczenie z tworzenia krótkiego tekstu marketingowego.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <article class="project-card reveal" data-category="strona">
+        <button class="project-thumb" type="button" aria-label="Otwórz podgląd dashboardu Smart Data" data-modal-symbol="▥" data-modal-title="Smart Data — dashboard" data-modal-description="Koncepcja panelu danych z naciskiem na czytelność informacji, hierarchię wizualną i prostotę obsługi.">
+          <div class="project-thumb__art"><span class="project-symbol">▥</span></div>
+          <div class="project-overlay"><span class="zoom-label">Powiększ podgląd</span></div>
+        </button>
+        <div class="project-body">
+          <div class="project-meta"><span class="category">Strona WWW</span><span class="tool">HTML + CSS + AI</span></div>
+          <h3 class="project-title">Smart Data</h3>
+          <p class="project-description">Projekt dashboardu pokazującego, jak AI może pomóc w prototypowaniu interfejsów.</p>
+          <div class="project-footer"><span></span><button class="project-link open-project" type="button" data-modal-symbol="▥" data-modal-title="Smart Data — dashboard" data-modal-description="Koncepcja panelu danych z naciskiem na czytelność informacji.">Otwórz projekt <span class="project-arrow">→</span></button></div>
+        </div>
+      </article>
+
+      <div class="no-results" id="noResults">
+        <strong>Brak projektów w tej kategorii.</strong>
+        <p>Spróbuj wybrać inną kategorię.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="section" id="umiejetnosci">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Czego się nauczyłem</div>
+      <h2 class="section-title">Od pomysłu do gotowego materiału.</h2>
+      <p class="section-description">Najważniejsze umiejętności, które rozwijam podczas kursu.</p>
+    </div>
+
+    <div class="skills-grid">
+      <article class="skill-card reveal">
+        <div class="skill-icon">✦</div>
+        <h3>Prompt engineering</h3>
+        <p>Uczę się tworzyć precyzyjne polecenia, iterować je i dopasowywać do oczekiwanego rezultatu.</p>
+      </article>
+      <article class="skill-card reveal">
+        <div class="skill-icon">◉</div>
+        <h3>Generowanie obrazów</h3>
+        <p>Eksperymentuję ze stylem, kompozycją, światłem, perspektywą i spójnością wizualną.</p>
+      </article>
+      <article class="skill-card reveal">
+        <div class="skill-icon">&lt;/&gt;</div>
+        <h3>Tworzenie stron</h3>
+        <p>Wykorzystuję AI jako pomoc przy HTML, CSS i JavaScript, a następnie samodzielnie poprawiam kod.</p>
+      </article>
+      <article class="skill-card reveal">
+        <div class="skill-icon">Aa</div>
+        <h3>Praca z tekstem</h3>
+        <p>Potrafię tworzyć, skracać, rozwijać, redagować i dopasowywać treści do różnych odbiorców.</p>
+      </article>
+      <article class="skill-card reveal">
+        <div class="skill-icon">▶</div>
+        <h3>Multimedia</h3>
+        <p>Poznaję narzędzia AI do pracy z prezentacjami, dźwiękiem, animacją i materiałami wideo.</p>
+      </article>
+      <article class="skill-card reveal">
+        <div class="skill-icon">✓</div>
+        <h3>Weryfikacja wyników</h3>
+        <p>Uczę się sprawdzać odpowiedzi AI, poprawiać błędy i traktować model jako narzędzie, a nie wyrocznię.</p>
+      </article>
+    </div>
+
+    <div class="stats reveal" aria-label="Podsumowanie portfolio">
+      <div class="stat"><strong>9+</strong><span>PRZYKŁADOWYCH PROJEKTÓW</span></div>
+      <div class="stat"><strong>7</strong><span>KATEGORII TWÓRCZYCH</span></div>
+      <div class="stat"><strong>∞</strong><span>POMYSŁÓW DO EKSPERYMENTOWANIA</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="kontakt">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <span class="brand__mark">AI</span>
+          <span class="brand__text">Moje portfolio AI</span>
+        </div>
+        <p>
+          Portfolio prezentujące moje projekty i postępy podczas kursu sztucznej inteligencji.
+          Podmień przykładowe dane na swoje i dodaj linki do gotowych prac.
+        </p>
+      </div>
+      <div class="footer-contact">
+        <h3>Kontakt</h3>
+        <a href="mailto:twoj.email@example.com">twoj.email@example.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Imię Nazwisko</span>
+      <span>Stworzone z pomocą AI ✦</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+  <div class="modal__box">
+    <button class="modal__close" id="modalClose" type="button" aria-label="Zamknij podgląd">×</button>
+    <div class="modal__visual">
+      <div class="modal__symbol" id="modalSymbol" aria-hidden="true">✦</div>
+    </div>
+    <div class="modal__content">
+      <div class="eyebrow">Podgląd projektu</div>
+      <h2 id="modalTitle">Projekt</h2>
+      <p id="modalDescription">Opis projektu.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   MOJE PORTFOLIO AI — JAVASCRIPT
+   ========================================================= */
+
+(function(){
+  "use strict";
+
+  const $ = (selector, scope = document) => scope.querySelector(selector);
+  const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+
+  /* ---------- Loader ---------- */
+  const loader = $("#loader");
+  window.addEventListener("load", () => {
+    setTimeout(() => loader.classList.add("is-hidden"), 450);
+  });
+
+  /* ---------- Header scroll state ---------- */
+  const header = $(".site-header");
+  const updateHeader = () => {
+    header.classList.toggle("scrolled", window.scrollY > 25);
+  };
+  window.addEventListener("scroll", updateHeader, {passive:true});
+  updateHeader();
+
+  /* ---------- Mobile navigation ---------- */
+  const navToggle = $("#navToggle");
+  const navLinks = $("#navLinks");
+
+  const closeNav = () => {
+    navLinks.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "Otwórz menu");
+  };
+
+  navToggle.addEventListener("click", () => {
+    const open = navLinks.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.setAttribute("aria-label", open ? "Zamknij menu" : "Otwórz menu");
+  });
+
+  $$("#navLinks a").forEach(link => {
+    link.addEventListener("click", closeNav);
+  });
+
+  document.addEventListener("click", e => {
+    if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) closeNav();
+  });
+
+  /* ---------- Smooth navigation ---------- */
+  $$(".nav-links a, .hero a").forEach(link => {
+    link.addEventListener("click", e => {
+      const href = link.getAttribute("href");
+      if (!href || !href.startsWith("#")) return;
+      const target = $(href);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+  });
+
+  /* ---------- Active navigation ---------- */
+  const sections = $$("main section[id]");
+  const navAnchors = $$(".nav-links a");
+
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      navAnchors.forEach(a => a.classList.remove("active"));
+      const active = $(`.nav-links a[href="#${entry.target.id}"]`);
+      if (active) active.classList.add("active");
+    });
+  }, {rootMargin:"-35% 0px -55% 0px"});
+
+  sections.forEach(section => sectionObserver.observe(section));
+
+  /* ---------- Reveal animations ---------- */
+  const revealItems = $$(".reveal");
+
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      });
+    }, {threshold:.12});
+    revealItems.forEach(item => revealObserver.observe(item));
+  } else {
+    revealItems.forEach(item => item.classList.add("is-visible"));
+  }
+
+  /* ---------- Project filtering ---------- */
+  const filterButtons = $$(".filter-btn");
+  const cards = $$(".project-card");
+  const noResults = $("#noResults");
+
+  function filterProjects(category){
+    let visible = 0;
+
+    cards.forEach(card => {
+      const match = category === "all" || card.dataset.category === category;
+      card.classList.toggle("is-hidden", !match);
+
+      if (match) {
+        visible++;
+        card.style.animation = "none";
+        requestAnimationFrame(() => {
+          card.style.animation = "cardIn .55s both cubic-bezier(.2,.8,.2,1)";
+        });
+      }
+    });
+
+    noResults.classList.toggle("is-visible", visible === 0);
+  }
+
+  filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      filterButtons.forEach(btn => {
+        btn.classList.remove("is-active");
+        btn.setAttribute("aria-pressed", "false");
+      });
+
+      button.classList.add("is-active");
+      button.setAttribute("aria-pressed", "true");
+      filterProjects(button.dataset.filter);
+    });
+
+    button.setAttribute("aria-pressed", button.classList.contains("is-active") ? "true" : "false");
+  });
+
+  /* ---------- Project modal ---------- */
+  const modal = $("#projectModal");
+  const modalClose = $("#modalClose");
+  const modalTitle = $("#modalTitle");
+  const modalDescription = $("#modalDescription");
+  const modalSymbol = $("#modalSymbol");
+
+  let lastFocused = null;
+
+  function openModal(trigger){
+    lastFocused = document.activeElement;
+
+    modalTitle.textContent = trigger.dataset.modalTitle || "Projekt";
+    modalDescription.textContent = trigger.dataset.modalDescription || "Opis projektu.";
+    modalSymbol.textContent = trigger.dataset.modalSymbol || "✦";
+
+    modal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    modalClose.focus();
+  }
+
+  function closeModal(){
+    modal.classList.remove("is-open");
+    document.body.style.overflow = "";
+    if (lastFocused && typeof lastFocused.focus === "function") {
+      lastFocused.focus();
+    }
+  }
+
+  $$(".project-thumb, .open-project").forEach(trigger => {
+    trigger.addEventListener("click", () => openModal(trigger));
+  });
+
+  modalClose.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", e => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+
+  /* ---------- Modal keyboard trap ---------- */
+  modal.addEventListener("keydown", e => {
+    if (e.key !== "Tab") return;
+
+    const focusable = $$(
+      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
+      modal
+    ).filter(el => !el.disabled && el.offsetParent !== null);
+
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  /* ---------- Dynamic year ---------- */
+  $("#year").textContent = new Date().getFullYear();
+
+  /* ---------- Small pointer glow on cards ---------- */
+  const finePointer = window.matchMedia("(pointer:fine)").matches;
+
+  if (finePointer) {
+    $$(".project-card, .skill-card").forEach(card => {
+      card.addEventListener("pointermove", e => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty("--mx", `${x}%`);
+        card.style.setProperty("--my", `${y}%`);
+      });
+    });
+  }
+
+  /* ---------- Escape mobile menu ---------- */
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeNav();
+  });
+
+  /* ---------- Prevent accidental form-like button submission ---------- */
+  $$("button").forEach(button => {
+    button.addEventListener("click", () => {
+      if (!button.getAttribute("type")) button.setAttribute("type","button");
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
